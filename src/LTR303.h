@@ -238,7 +238,8 @@ class LTR303
 			// (Also see getError() below)
 			
 		boolean setIntrPersist(unsigned char persist);
-			// Sets the interrupt persistance i.e. controls the N number of times the measurement data is outside the range defined by upper and lower threshold
+			// Sets the interrupt persistance i.e. controls the N number of times the 
+			// measurement data is outside the range defined by upper and lower threshold
 			// Default value is 0x00
 			// If persist = 0, every sensor value out of threshold range (default)
 			// If persist = 1, every 2 consecutive value out of threshold range

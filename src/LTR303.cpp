@@ -80,7 +80,23 @@ boolean setControl(unsigned char gain, boolean reset, boolean mode) {
 	// If mode = false(0), stand-by mode (default)
 	// If mode = true(1), active mode
 	
+	unsigned char control = 0x00;
 	
+	// sanity check for gain
+	if (gain >= 7) {
+		gain = 7;
+	}
+	control |= gain << 2;
+	if(reset) {
+		control |= 0x10;
+	}
+	
+	if(mode) {
+		control |= 0x01;
+	}
+	
+	if (writeByte(LTR303_CONTR,control))
+			return(true);
 }			
 			
 boolean LTR303::setTiming(boolean gain, unsigned char time)
