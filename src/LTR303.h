@@ -318,8 +318,7 @@ class LTR303
 
 #define LTR303_ADDR   0x29 // default address
 
-// LTR303 registers
-
+// LTR303 register addresses
 #define LTR303_CONTR         0x80
 #define LTR303_MEAS_RATE     0x85
 #define LTR303_PART_ID       0x86
@@ -336,15 +335,4 @@ class LTR303
 #define LTR303_THRES_LOW_1   0x9A
 #define LTR303_INTR_PERS     0x9E
 
-/*
-#define LTR303_CMD_CLEAR     0xC0
-#define	LTR303_REG_CONTROL   0x00
-#define	LTR303_REG_TIMING    0x01
-#define	LTR303_REG_THRESH_L  0x02
-#define	LTR303_REG_THRESH_H  0x04
-#define	LTR303_REG_INTCTL    0x06
-#define	LTR303_REG_ID        0x0A
-#define	LTR303_REG_DATA_0    0x0C
-#define	LTR303_REG_DATA_1    0x0E
-*/
 #endif
