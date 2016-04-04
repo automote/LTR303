@@ -1,69 +1,89 @@
 /*
-	SFE_TSL2561 illumination sensor library for Arduino
-	Mike Grusin, SparkFun Electronics
+	LTR303 illumination sensor library for Arduino
+	Lovelesh, thingTronics
 	
-	This library provides functions to access the TAOS TSL2561
-	Illumination Sensor.
-	
-	Our example code uses the "beerware" license. You can do anything
-	you like with this code. No really, anything. If you find it useful,
-	buy me a beer someday.
+The MIT License (MIT)
 
-	version 1.0 2013/09/20 MDG initial version
-	Updated to Arduino 1.6.4 5/2015
+Copyright (c) 2015 thingTronics Limited
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+version 0.1
 */
 
-#include <SparkFunTSL2561.h>
+#include <LTR303.h>
 #include <Wire.h>
 
 
-SFE_TSL2561::SFE_TSL2561(void)
-	// SFE_TSL2561 object
-{}
-
-
-boolean SFE_TSL2561::begin(void)
-	// Initialize TSL2561 library with default address (0x39)
-	// Always returns true
-{
-	return(begin(TSL2561_ADDR));
+LTR303::LTR303(void) {
+	// LTR303 object
 }
 
-
-boolean SFE_TSL2561::begin(char i2c_address)
-	// Initialize TSL2561 library to arbitrary address or:
-	// TSL2561_ADDR_0 (0x29 address with '0' shorted on board)
-	// TSL2561_ADDR   (0x39 default address)
-	// TSL2561_ADDR_1 (0x49 address with '1' shorted on board)
+boolean LTR303::begin(void) {
+	// Initialize LTR303 library with default address (0x39)
 	// Always returns true
-{
-	_i2c_address = i2c_address;
-	Wire.begin();
-	return(true);
+
+	return(begin(LTR303_ADDR));
 }
 
-
-boolean SFE_TSL2561::setPowerUp(void)
-	// Turn on TSL2561, begin integrations
+boolean LTR303::setPowerUp(void)
+	// Turn on LTR303, begin integrations
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 {
-	// Write 0x03 to command byte (power on)
-	return(writeByte(TSL2561_REG_CONTROL,0x03));
+	// Write 0x03 (reset = 1 & mode = 1) to command byte (power on)
+	return(writeByte(LTR303_CONTR,0x03));
 }
 
 
-boolean SFE_TSL2561::setPowerDown(void)
-	// Turn off TSL2561
+boolean LTR303::setPowerDown(void)
+	// Turn off LTR303
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 {
-	// Clear command byte (power off)
-	return(writeByte(TSL2561_REG_CONTROL,0x00));
+	// Clear command byte (reset = 0 & mode = 0)(power off)
+	return(writeByte(LTR303_CONTR,0x00));
 }
 
 
-boolean SFE_TSL2561::setTiming(boolean gain, unsigned char time)
+boolean setControl(unsigned char gain, boolean reset, boolean mode) {
+	// Sets the gain, SW reset and mode of LTR303
+	// Default value is 0x00
+	// If gain = 0, device is set to 1X gain (default)
+	// If gain = 1, device is set to 2X gain
+	// If gain = 2, device is set to 4X gain
+	// If gain = 3, device is set to 8X gain
+	// If gain = 4, invalid
+	// If gain = 5, invalid
+	// If gain = 6, device is set to 48X gain
+	// If gain = 7, device is set to 96X gain
+	//----------------------------------------
+	// If reset = false(0), initial start-up procedure not started (default)
+	// If reset = true(1), initial start-up procedure started
+	//----------------------------------------
+	// If mode = false(0), stand-by mode (default)
+	// If mode = true(1), active mode
+	
+	
+}			
+			
+boolean LTR303::setTiming(boolean gain, unsigned char time)
 	// If gain = false (0), device is set to low gain (1X)
 	// If gain = high (1), device is set to high gain (16X)
 	// If time = 0, integration will be 13.7ms
@@ -76,7 +96,7 @@ boolean SFE_TSL2561::setTiming(boolean gain, unsigned char time)
 	unsigned char timing;
 
 	// Get timing byte
-	if (readByte(TSL2561_REG_TIMING,timing))
+	if (readByte(LTR303_REG_TIMING,timing))
 	{
 		// Set gain (0 or 1)
 		if (gain)
@@ -89,14 +109,14 @@ boolean SFE_TSL2561::setTiming(boolean gain, unsigned char time)
 		timing |= (time & 0x03);
 
 		// Write modified timing byte back to device
-		if (writeByte(TSL2561_REG_TIMING,timing))
+		if (writeByte(LTR303_REG_TIMING,timing))
 			return(true);
 	}
 	return(false);
 }
 
 
-boolean SFE_TSL2561::setTiming(boolean gain, unsigned char time, unsigned int &ms)
+boolean LTR303::setTiming(boolean gain, unsigned char time, unsigned int &ms)
 	// If gain = false (0), device is set to low gain (1X)
 	// If gain = high (1), device is set to high gain (16X)
 	// If time = 0, integration will be 13.7ms
@@ -120,7 +140,7 @@ boolean SFE_TSL2561::setTiming(boolean gain, unsigned char time, unsigned int &m
 }
 
 
-boolean SFE_TSL2561::manualStart(void)
+boolean LTR303::manualStart(void)
 	// Starts a manual integration period
 	// After running this command, you must manually stop integration with manualStop()
 	// Internally sets integration time to 3 for manual integration (gain is unchanged)
@@ -130,18 +150,18 @@ boolean SFE_TSL2561::manualStart(void)
 	unsigned char timing;
 	
 	// Get timing byte
-	if (readByte(TSL2561_REG_TIMING,timing))
+	if (readByte(LTR303_REG_TIMING,timing))
 	{
 		// Set integration time to 3 (manual integration)
 		timing |= 0x03;
 
-		if (writeByte(TSL2561_REG_TIMING,timing))
+		if (writeByte(LTR303_REG_TIMING,timing))
 		{
 			// Begin manual integration
 			timing |= 0x08;
 
 			// Write modified timing byte back to device
-			if (writeByte(TSL2561_REG_TIMING,timing))
+			if (writeByte(LTR303_REG_TIMING,timing))
 				return(true);
 		}
 	}
@@ -149,7 +169,7 @@ boolean SFE_TSL2561::manualStart(void)
 }
 
 
-boolean SFE_TSL2561::manualStop(void)
+boolean LTR303::manualStop(void)
 	// Stops a manual integration period
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
@@ -157,34 +177,34 @@ boolean SFE_TSL2561::manualStop(void)
 	unsigned char timing;
 	
 	// Get timing byte
-	if (readByte(TSL2561_REG_TIMING,timing))
+	if (readByte(LTR303_REG_TIMING,timing))
 	{
 		// Stop manual integration
 		timing &= ~0x08;
 
 		// Write modified timing byte back to device
-		if (writeByte(TSL2561_REG_TIMING,timing))
+		if (writeByte(LTR303_REG_TIMING,timing))
 			return(true);
 	}
 	return(false);
 }
 
 
-boolean SFE_TSL2561::getData(unsigned int &data0, unsigned int &data1)
+boolean LTR303::getData(unsigned int &data0, unsigned int &data1)
 	// Retrieve raw integration results
 	// data0 and data1 will be set to integration results
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 {
 	// Get data0 and data1 out of result registers
-	if (readUInt(TSL2561_REG_DATA_0,data0) && readUInt(TSL2561_REG_DATA_1,data1)) 
+	if (readUInt(LTR303_REG_DATA_0,data0) && readUInt(LTR303_REG_DATA_1,data1)) 
 		return(true);
 
 	return(false);
 }
 
 
-boolean SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux)
+boolean LTR303::getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux)
 	// Convert raw data to lux
 	// gain: 0 (1X) or 1 (16X), see setTiming()
 	// ms: integration time in ms, from setTiming() or from manual integration
@@ -252,7 +272,7 @@ boolean SFE_TSL2561::getLux(unsigned char gain, unsigned int ms, unsigned int CH
 }
 
 
-boolean SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char persist)
+boolean LTR303::setInterruptControl(unsigned char control, unsigned char persist)
 	// Sets up interrupt operations
 	// If control = 0, interrupt output disabled
 	// If control = 1, use level interrupt, see setInterruptThreshold()
@@ -263,35 +283,35 @@ boolean SFE_TSL2561::setInterruptControl(unsigned char control, unsigned char pe
 	// (Also see getError() below)
 {
 	// Place control and persist bits into proper location in interrupt control register
-	if (writeByte(TSL2561_REG_INTCTL,((control | 0B00000011) << 4) & (persist | 0B00001111)))
+	if (writeByte(LTR303_REG_INTCTL,((control | 0B00000011) << 4) & (persist | 0B00001111)))
 		return(true);
 		
 	return(false);
 }
 
 
-boolean SFE_TSL2561::setInterruptThreshold(unsigned int low, unsigned int high)
+boolean LTR303::setInterruptThreshold(unsigned int low, unsigned int high)
 	// Set interrupt thresholds (channel 0 only)
 	// low, high: 16-bit threshold values
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 {
 	// Write low and high threshold values
-	if (writeUInt(TSL2561_REG_THRESH_L,low) && writeUInt(TSL2561_REG_THRESH_H,high))
+	if (writeUInt(LTR303_REG_THRESH_L,low) && writeUInt(LTR303_REG_THRESH_H,high))
 		return(true);
 		
 	return(false);
 }
 
 
-boolean SFE_TSL2561::clearInterrupt(void)
+boolean LTR303::clearInterrupt(void)
 	// Clears an active interrupt
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 {
 	// Set up command byte for interrupt clear
 	Wire.beginTransmission(_i2c_address);
-	Wire.write(TSL2561_CMD_CLEAR);
+	Wire.write(LTR303_CMD_CLEAR);
 	_error = Wire.endTransmission();
 	if (_error == 0)
 		return(true);
@@ -300,21 +320,21 @@ boolean SFE_TSL2561::clearInterrupt(void)
 }
 
 
-boolean SFE_TSL2561::getID(unsigned char &ID)
-	// Retrieves part and revision code from TSL2561
+boolean LTR303::getID(unsigned char &ID)
+	// Retrieves part and revision code from LTR303
 	// Sets ID to part ID (see datasheet)
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 {
 	// Get ID byte from ID register
-	if (readByte(TSL2561_REG_ID,ID))
+	if (readByte(LTR303_REG_ID,ID))
 		return(true);
 
 	return(false);
 }
 
 
-byte SFE_TSL2561::getError(void)
+byte LTR303::getError(void)
 	// If any library command fails, you can retrieve an extended
 	// error code using this command. Errors are from the wire library: 
 	// 0 = Success
@@ -328,16 +348,16 @@ byte SFE_TSL2561::getError(void)
 
 // Private functions:
 
-boolean SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
-	// Reads a byte from a TSL2561 address
-	// Address: TSL2561 address (0 to 15)
+boolean LTR303::readByte(unsigned char address, unsigned char &value)
+	// Reads a byte from a LTR303 address
+	// Address: LTR303 address (0 to 15)
 	// Value will be set to stored byte
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() above)
 {
 	// Set up command byte for read
 	Wire.beginTransmission(_i2c_address);
-	Wire.write((address & 0x0F) | TSL2561_CMD);
+	Wire.write((address & 0x0F) | LTR303_CMD);
 	_error = Wire.endTransmission();
 
 	// Read requested byte
@@ -354,16 +374,16 @@ boolean SFE_TSL2561::readByte(unsigned char address, unsigned char &value)
 }
 
 
-boolean SFE_TSL2561::writeByte(unsigned char address, unsigned char value)
-	// Write a byte to a TSL2561 address
-	// Address: TSL2561 address (0 to 15)
+boolean LTR303::writeByte(unsigned char address, unsigned char value)
+	// Write a byte to a LTR303 address
+	// Address: LTR303 address (0 to 15)
 	// Value: byte to write to address
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() above)
 {
 	// Set up command byte for write
 	Wire.beginTransmission(_i2c_address);
-	Wire.write((address & 0x0F) | TSL2561_CMD);
+	Wire.write((address & 0x0F) | LTR303_CMD);
 	// Write byte
 	Wire.write(value);
 	_error = Wire.endTransmission();
@@ -374,9 +394,9 @@ boolean SFE_TSL2561::writeByte(unsigned char address, unsigned char value)
 }
 
 
-boolean SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
-	// Reads an unsigned integer (16 bits) from a TSL2561 address (low byte first)
-	// Address: TSL2561 address (0 to 15), low byte first
+boolean LTR303::readUInt(unsigned char address, unsigned int &value)
+	// Reads an unsigned integer (16 bits) from a LTR303 address (low byte first)
+	// Address: LTR303 address (0 to 15), low byte first
 	// Value will be set to stored unsigned integer
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() above)
@@ -385,7 +405,7 @@ boolean SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 	
 	// Set up command byte for read
 	Wire.beginTransmission(_i2c_address);
-	Wire.write((address & 0x0F) | TSL2561_CMD);
+	Wire.write((address & 0x0F) | LTR303_CMD);
 	_error = Wire.endTransmission();
 
 	// Read two bytes (low and high)
@@ -405,9 +425,9 @@ boolean SFE_TSL2561::readUInt(unsigned char address, unsigned int &value)
 }
 
 
-boolean SFE_TSL2561::writeUInt(unsigned char address, unsigned int value)
-	// Write an unsigned integer (16 bits) to a TSL2561 address (low byte first)
-	// Address: TSL2561 address (0 to 15), low byte first
+boolean LTR303::writeUInt(unsigned char address, unsigned int value)
+	// Write an unsigned integer (16 bits) to a LTR303 address (low byte first)
+	// Address: LTR303 address (0 to 15), low byte first
 	// Value: unsigned int to write to address
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() above)
