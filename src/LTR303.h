@@ -71,7 +71,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		boolean setControl(unsigned char gain, boolean reset, boolean mode);
+		boolean setControl(byte gain, boolean reset, boolean mode);
 			// Sets the gain, SW reset and mode of LTR303
 			// Default value is 0x00
 			// If gain = 0, device is set to 1X gain (default)
@@ -89,7 +89,7 @@ class LTR303
 			// If mode = false(0), stand-by mode (default)
 			// If mode = true(1), active mode
 			
-		boolean getControl(unsigned char &gain, boolean reset, boolean mode);
+		boolean getControl(byte &gain, boolean reset, boolean mode);
 			// Gets the control register values
 			// Default value is 0x00
 			// If gain = 0, device is set to 1X gain (default)
@@ -110,7 +110,7 @@ class LTR303
 			// (Also see getError() below)
 			
 			
-		boolean setMeasurementRate(unsigned char integrationTime, unsigned char measurementRate);
+		boolean setMeasurementRate(byte integrationTime, byte measurementRate);
 			// Sets the integration time and measurement rate of the sensor
 			// integrationTime is the measurement time for each ALs cycle
 			// measurementRate is the interval between DATA_REGISTERS update
@@ -136,7 +136,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 			
-		boolean getMeasurementRate(unsigned char &integrationTime, unsigned char &measurementRate);
+		boolean getMeasurementRate(byte &integrationTime, byte &measurementRate);
 			// Gets the value of Measurement Rate register
 			// Default value is 0x03
 			// If integrationTime = 0, integrationTime will be 100ms (default)
@@ -159,7 +159,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		boolean getPartID(unsigned char &partID);
+		boolean getPartID(byte &partID);
 			// Gets the part number ID and revision ID of the chip
 			// Default value is 0x0A
 			// part number ID = 0x0A (default)
@@ -167,7 +167,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 		
-		boolean getManufacID(unsigned char &manufacID);
+		boolean getManufacID(byte &manufacID);
 			// Gets the Manufacturers ID
 			// Default value is 0x05
 			// Returns true (1) if successful, false (0) if there was an I2C error
@@ -179,9 +179,12 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 		
-		boolean getStatus(unsigned char &gain, boolean intrStatus, boolean dataStatus);
+		boolean getStatus(boolean valid, byte &gain, boolean intrStatus, boolean dataStatus);
 			// Gets the status information of LTR303
 			// Default value is 0x00
+			// If valid = false(0), Sensor data is valid (default)
+			// If valid = true(1), Sensor data is invalid
+			//--------------------------------------------
 			// If gain = 0, device is set to 1X gain (default)
 			// If gain = 1, device is set to 2X gain
 			// If gain = 2, device is set to 4X gain
@@ -237,7 +240,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 			
-		boolean setIntrPersist(unsigned char persist);
+		boolean setIntrPersist(byte persist);
 			// Sets the interrupt persistance i.e. controls the N number of times the 
 			// measurement data is outside the range defined by upper and lower threshold
 			// Default value is 0x00
@@ -260,7 +263,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 			
-		boolean getIntrPersist(unsigned char &persist);
+		boolean getIntrPersist(byte &persist);
 			// Gets the interrupt persistance i.e. controls the N number of times the measurement data is outside the range defined by upper and lower threshold
 			// Default value is 0x00
 			// If persist = 0, every sensor value out of threshold range (default)
@@ -282,7 +285,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 		
-		boolean getLux(unsigned char gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux);
+		boolean getLux(byte gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux);
 			// Convert raw data to lux
 			// gain: 0 (1X) or 1 (16X), see setTiming()
 			// ms: integration time in ms, from setTiming() or from manual integration
@@ -302,35 +305,35 @@ class LTR303
 
 	private:
 
-		boolean readByte(unsigned char address, unsigned char &value);
+		boolean readByte(byte address, byte &value);
 			// Reads a byte from a LTR303 address
 			// Address: LTR303 address (0 to 15)
 			// Value will be set to stored byte
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() above)
 	
-		boolean writeByte(unsigned char address, unsigned char value);
+		boolean writeByte(byte address, byte value);
 			// Write a byte to a LTR303 address
 			// Address: LTR303 address (0 to 15)
 			// Value: byte to write to address
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() above)
 
-		boolean readUInt(unsigned char address, unsigned int &value);
+		boolean readUInt(byte address, unsigned int &value);
 			// Reads an unsigned integer (16 bits) from a LTR303 address (low byte first)
 			// Address: LTR303 address (0 to 15), low byte first
 			// Value will be set to stored unsigned integer
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() above)
 
-		boolean writeUInt(unsigned char address, unsigned int value);
+		boolean writeUInt(byte address, unsigned int value);
 			// Write an unsigned integer (16 bits) to a LTR303 address (low byte first)
 			// Address: LTR303 address (0 to 15), low byte first
 			// Value: unsigned int to write to address
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() above)
 			
-		char _i2c_address;
+		byte _i2c_address;
 		
 		byte _error;
 };
