@@ -285,14 +285,14 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 		
-		boolean getLux(byte gain, unsigned int ms, unsigned int CH0, unsigned int CH1, double &lux);
+		boolean getLux(byte gain, byte integrationTime, unsigned int CH0, unsigned int CH1, double &lux);
 			// Convert raw data to lux
-			// gain: 0 (1X) or 1 (16X), see setTiming()
-			// ms: integration time in ms, from setTiming() or from manual integration
+			// gain: 0 (1X) or 7 (96X), see getControl()
+			// integrationTime: integration time in ms, from getMeasurementRate()
 			// CH0, CH1: results from getData()
 			// lux will be set to resulting lux calculation
 			// returns true (1) if calculation was successful
-			// RETURNS false (0) AND lux = 0.0 IF EITHER SENSOR WAS SATURATED (0XFFFF)
+			// returns false (0) AND lux = 0.0 IF EITHER SENSOR WAS SATURATED (0XFFFF)
 		
 		byte getError(void);
 			// If any library command fails, you can retrieve an extended
