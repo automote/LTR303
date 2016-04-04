@@ -62,7 +62,7 @@ boolean LTR303::setPowerDown(void) {
 }
 
 
-boolean LTR303::setControl(byte gain, boolean reset, boolean mode) {
+boolean LTR303::setControl(byte gain = 0, boolean reset = false, boolean mode = false) {
 	// Sets the gain, SW reset and mode of LTR303
 	// Default value is 0x00
 	// If gain = 0, device is set to 1X gain (default)
@@ -142,7 +142,7 @@ boolean LTR303::getControl(byte &gain, boolean reset, boolean mode) {
 	return(false);
 }
 
-boolean LTR303::setMeasurementRate(byte integrationTime, byte measurementRate) {
+boolean LTR303::setMeasurementRate(byte integrationTime = 0, byte measurementRate = 3) {
 	// Sets the integration time and measurement rate of the sensor
 	// integrationTime is the measurement time for each ALs cycle
 	// measurementRate is the interval between DATA_REGISTERS update
@@ -298,7 +298,7 @@ boolean LTR303::getStatus(boolean valid, byte &gain, boolean intrStatus, boolean
 	return(false);
 }
 
-boolean LTR303::setInterruptControl(boolean polarity, boolean intrMode) {
+boolean LTR303::setInterruptControl(boolean polarity = false, boolean intrMode = false) {
 	// Sets up interrupt operations
 	// Default value is 0x08
 	// If polarity = false(0), INT pin is active at logic 0 (default)
@@ -366,7 +366,7 @@ boolean LTR303::getThreshold(unsigned int &upperLimit, unsigned int &lowerLimit)
 	return(readUInt(LTR303_THRES_UP_0,upperLimit) && readUInt(LTR303_THRES_LOW_0,lowerLimit));		
 }
 
-boolean LTR303::setIntrPersist(byte persist) {
+boolean LTR303::setIntrPersist(byte persist = 0) {
 	// Sets the interrupt persistance i.e. controls the N number of times the 
 	// measurement data is outside the range defined by upper and lower threshold
 	// Default value is 0x00

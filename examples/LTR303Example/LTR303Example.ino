@@ -47,9 +47,10 @@ void setup()
   Serial.println("LTR303-ALS example sketch");
 
   // Initialize the LTR303 library
+  // 100ms 	initial startup time required
+  delay(100);
 
   // You can pass nothing to light.begin() for the default I2C address (0x29)
-  
   light.begin();
 
   // Get factory ID from sensor:
@@ -87,6 +88,8 @@ void setup()
   // If gain = 6, device is set to 48X gain
   // If gain = 7, device is set to 96X gain
   gain = 0;
+  Serial.println("Setting Gain...");
+  light.setControl(gain);
 
   // If integrationTime = 0, integrationTime will be 100ms (default)
   // If integrationTime = 1, integrationTime will be 50ms
@@ -99,10 +102,17 @@ void setup()
 
   unsigned char time = 1;
 
-  
+  // If integrationTime = 0, integrationTime will be 100ms (default)
+  // If integrationTime = 1, integrationTime will be 50ms
+  // If integrationTime = 2, integrationTime will be 200ms
+  // If integrationTime = 3, integrationTime will be 400ms
+  // If integrationTime = 4, integrationTime will be 150ms
+  // If integrationTime = 5, integrationTime will be 250ms
+  // If integrationTime = 6, integrationTime will be 300ms
+  // If integrationTime = 7, integrationTime will be 350ms
   
   Serial.println("Set timing...");
-  light.setTiming(gain,time,ms);
+  light.setMeasurementRate(time);
 
   // To start taking measurements, power up the sensor:
   
@@ -117,19 +127,15 @@ void setup()
 void loop()
 {
   // Wait between measurements before retrieving the result
-  // (You can also configure the sensor to issue an interrupt
+  // You can also configure the sensor to issue an interrupt 
   // when measurements are complete)
   
-  // This sketch uses the TSL2561's built-in integration timer.
-  // You can also perform your own manual integration timing
-  // by setting "time" to 3 (manual) in setTiming(),
-  // then performing a manualStart() and a manualStop() as in the below
-  // commented statements:
+  // This sketch uses the LTR303's built-in integration timer.
   
-  // ms = 1000;
-  // light.manualStart();
+  int ms = 1000;
+  
   delay(ms);
-  // light.manualStop();
+  
   
   // Once integration is complete, we'll retrieve the data.
   
@@ -156,14 +162,13 @@ void loop()
     // was successful, or 0 if one or both of the sensors was
     // saturated (too much light). If this happens, you can
     // reduce the integration time and/or gain.
-    // For more information see the hookup guide at: https://learn.sparkfun.com/tutorials/getting-started-with-the-tsl2561-luminosity-sensor
   
     double lux;    // Resulting lux value
     boolean good;  // True if neither sensor is saturated
     
     // Perform lux calculation:
 
-    good = light.getLux(gain,ms,data0,data1,lux);
+    good = light.getLux(gain,integrationTime,data0,data1,lux);
     
     // Print out the results:
 	
@@ -209,4 +214,3 @@ void printError(byte error)
       Serial.println("unknown error");
   }
 }
-
