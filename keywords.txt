@@ -1,0 +1,36 @@
+##################################################################
+# Syntax Coloring Map For ClosedCube SHT3X Digital Sensor Library
+##################################################################
+
+##################################################################
+# Datatypes (KEYWORD1)
+##################################################################
+
+LTR303	KEYWORD1
+
+##################################################################
+# Methods and Functions (KEYWORD2)
+##################################################################
+
+begin				KEYWORD2
+setPowerUp			KEYWORD2
+setPowerDown		KEYWORD2
+setControl			KEYWORD2
+getControl			KEYWORD2
+setMeasurementRate	KEYWORD2
+getMeasurementRate	KEYWORD2
+getPartID			KEYWORD2
+getManufID			KEYWORD2
+getData				KEYWORD2
+setInterruptControl	KEYWORD2
+getInterruptControl	KEYWORD2
+setThreshold		KEYWORD2
+getThreshold		KEYWORD2
+setIntrPersist		KEYWORD2
+getIntrPersist		KEYWORD2
+getLux				KEYWORD2
+getError			KEYWORD2
+readByte			KEYWORD2
+writeByte			KEYWORD2
+readUInt			KEYWORD2
+writeUInt			KEYWORD2

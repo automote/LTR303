@@ -71,7 +71,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 
-		boolean setControl(byte gain = 0, boolean reset = false, boolean mode = false);
+		boolean setControl(byte gain, boolean reset, boolean mode);
 			// Sets the gain, SW reset and mode of LTR303
 			// Default value is 0x00
 			// If gain = 0, device is set to 1X gain (default)
@@ -110,7 +110,7 @@ class LTR303
 			// (Also see getError() below)
 			
 			
-		boolean setMeasurementRate(byte integrationTime = 0, byte measurementRate = 3);
+		boolean setMeasurementRate(byte integrationTime, byte measurementRate);
 			// Sets the integration time and measurement rate of the sensor
 			// integrationTime is the measurement time for each ALs cycle
 			// measurementRate is the interval between DATA_REGISTERS update
@@ -202,14 +202,14 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 			
-		boolean setInterruptControl(boolean polarity = false, boolean intrMode = false);
+		boolean setInterruptControl(boolean intrMode, boolean polarity);
 			// Sets up interrupt operations
 			// Default value is 0x08
-			// If polarity = false(0), INT pin is active at logic 0 (default)
-			// If polarity = true(1), INT pin is active at logic 1
-			//------------------------------------------------------
 			// If intrMode = false(0), INT pin is inactive (default)
 			// If intrMode = true(1), INT pin is active
+			//------------------------------------------------------
+			// If polarity = false(0), INT pin is active at logic 0 (default)
+			// If polarity = true(1), INT pin is active at logic 1
 			//------------------------------------------------------
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
@@ -240,7 +240,7 @@ class LTR303
 			// Returns true (1) if successful, false (0) if there was an I2C error
 			// (Also see getError() below)
 			
-		boolean setIntrPersist(byte persist = 0);
+		boolean setIntrPersist(byte persist);
 			// Sets the interrupt persistance i.e. controls the N number of times the 
 			// measurement data is outside the range defined by upper and lower threshold
 			// Default value is 0x00

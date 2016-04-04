@@ -89,7 +89,7 @@ void setup()
   // If gain = 7, device is set to 96X gain
   gain = 0;
   Serial.println("Setting Gain...");
-  light.setControl(gain);
+  light.setControl(gain, false, false);
 
   // If integrationTime = 0, integrationTime will be 100ms (default)
   // If integrationTime = 1, integrationTime will be 50ms
@@ -112,7 +112,7 @@ void setup()
   // If integrationTime = 7, integrationTime will be 350ms
   
   Serial.println("Set timing...");
-  light.setMeasurementRate(time);
+  light.setMeasurementRate(time,3);
 
   // To start taking measurements, power up the sensor:
   

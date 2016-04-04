@@ -39,7 +39,9 @@ boolean LTR303::begin(void) {
 	// Initialize LTR303 library with default address (0x39)
 	// Always returns true
 
-	return(begin(LTR303_ADDR));
+	_i2c_address = LTR303_ADDR;
+	Wire.begin();
+	return(true);
 }
 
 boolean LTR303::setPowerUp(void) {
@@ -51,7 +53,6 @@ boolean LTR303::setPowerUp(void) {
 	return(writeByte(LTR303_CONTR,0x03));
 }
 
-
 boolean LTR303::setPowerDown(void) {
 	// Turn off LTR303
 	// Returns true (1) if successful, false (0) if there was an I2C error
@@ -61,8 +62,7 @@ boolean LTR303::setPowerDown(void) {
 	return(writeByte(LTR303_CONTR,0x00));
 }
 
-
-boolean LTR303::setControl(byte gain = 0, boolean reset = false, boolean mode = false) {
+boolean LTR303::setControl(byte gain, boolean reset = false, boolean mode = false) {
 	// Sets the gain, SW reset and mode of LTR303
 	// Default value is 0x00
 	// If gain = 0, device is set to 1X gain (default)
@@ -142,7 +142,7 @@ boolean LTR303::getControl(byte &gain, boolean reset, boolean mode) {
 	return(false);
 }
 
-boolean LTR303::setMeasurementRate(byte integrationTime = 0, byte measurementRate = 3) {
+boolean LTR303::setMeasurementRate(byte integrationTime, byte measurementRate = 3) {
 	// Sets the integration time and measurement rate of the sensor
 	// integrationTime is the measurement time for each ALs cycle
 	// measurementRate is the interval between DATA_REGISTERS update
@@ -171,11 +171,11 @@ boolean LTR303::setMeasurementRate(byte integrationTime = 0, byte measurementRat
 	byte measurement = 0x00;
 	
 	// Perform sanity checks
-	if(integrationTime => 7) {
+	if(integrationTime >= 0x07) {
 		integrationTime = 0x00;
 	}
 	
-	if(measurementRate => 7) {
+	if(measurementRate >= 0x07) {
 		measurementRate = 0x00;
 	}
 	
@@ -298,14 +298,14 @@ boolean LTR303::getStatus(boolean valid, byte &gain, boolean intrStatus, boolean
 	return(false);
 }
 
-boolean LTR303::setInterruptControl(boolean polarity = false, boolean intrMode = false) {
+boolean LTR303::setInterruptControl(boolean intrMode, boolean polarity = false) {
 	// Sets up interrupt operations
 	// Default value is 0x08
-	// If polarity = false(0), INT pin is active at logic 0 (default)
-	// If polarity = true(1), INT pin is active at logic 1
-	//------------------------------------------------------
 	// If intrMode = false(0), INT pin is inactive (default)
 	// If intrMode = true(1), INT pin is active
+	//------------------------------------------------------
+	// If polarity = false(0), INT pin is active at logic 0 (default)
+	// If polarity = true(1), INT pin is active at logic 1
 	//------------------------------------------------------
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
@@ -353,7 +353,7 @@ boolean LTR303::setThreshold(unsigned int upperLimit, unsigned int lowerLimit) {
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 	
-	return(writeUInt(LTR303_THRES_UP_0,UpperLimit) && writeUInt(LTR303_THRES_LOW_0,lowerLimit));
+	return(writeUInt(LTR303_THRES_UP_0,upperLimit) && writeUInt(LTR303_THRES_LOW_0,lowerLimit));
 }
 
 boolean LTR303::getThreshold(unsigned int &upperLimit, unsigned int &lowerLimit) {
@@ -366,7 +366,7 @@ boolean LTR303::getThreshold(unsigned int &upperLimit, unsigned int &lowerLimit)
 	return(readUInt(LTR303_THRES_UP_0,upperLimit) && readUInt(LTR303_THRES_LOW_0,lowerLimit));		
 }
 
-boolean LTR303::setIntrPersist(byte persist = 0) {
+boolean LTR303::setIntrPersist(byte persist) {
 	// Sets the interrupt persistance i.e. controls the N number of times the 
 	// measurement data is outside the range defined by upper and lower threshold
 	// Default value is 0x00
@@ -390,9 +390,10 @@ boolean LTR303::setIntrPersist(byte persist = 0) {
 	// (Also see getError() below)
 	
 	// sanity check
-	if(persist => 15)
+	if(persist >= 15) {
 		persist = 0x00;
-	
+	}
+			
 	return(writeByte(LTR303_INTR_PERS,persist));
 }
 
@@ -446,8 +447,8 @@ boolean LTR303::getLux(byte gain, byte integrationTime, unsigned int CH0, unsign
 	ratio = d1 / d0;
 
 	// Normalize for integration time
-	d0 *= (402.0/ms);
-	d1 *= (402.0/ms);
+	d0 *= (402.0/integrationTime);
+	d1 *= (402.0/integrationTime);
 
 	// Normalize for gain
 	if (!gain) {
@@ -481,7 +482,6 @@ boolean LTR303::getLux(byte gain, byte integrationTime, unsigned int CH0, unsign
 	lux = 0.0;
 	return(true);
 }
-
 
 byte LTR303::getError(void) {
 	// If any library command fails, you can retrieve an extended
