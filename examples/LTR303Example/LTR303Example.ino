@@ -1,4 +1,6 @@
-/* LTR303-ALS library example sketch
+/* 
+	LTR303-ALS library example sketch
+	Lovelesh, thingTronics
 
 This sketch shows how to use the LTR303 library to read the Lite-On LTR303-ALS light sensor.
 
