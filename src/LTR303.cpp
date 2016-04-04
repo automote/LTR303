@@ -250,7 +250,6 @@ boolean LTR303::getData(unsigned int &CH0, unsigned int &CH1) {
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
 	
-	// Get CH0 and CH1 out of result registers
 	return(readUInt(LTR303_DATA_CH0_0,CH0) && readUInt(LTR303_DATA_CH1_0,CH1));
 }
 
@@ -358,37 +357,48 @@ boolean setThreshold(unsigned int upperLimit, unsigned int lowerLimit) {
 	
 	return(writeUInt(LTR303_THRES_UP_0,UpperLimit) && writeUInt(LTR303_THRES_LOW_0,lowerLimit));
 }
-boolean LTR303::setTiming(boolean gain, byte time)
-	// If gain = false (0), device is set to low gain (1X)
-	// If gain = high (1), device is set to high gain (16X)
-	// If time = 0, integration will be 13.7ms
-	// If time = 1, integration will be 101ms
-	// If time = 2, integration will be 402ms
-	// If time = 3, use manual start / stop
+
+boolean getThreshold(unsigned int &upperLimit, unsigned int &lowerLimit) {
+	// Gets the upper limit and lower limit of the threshold
+	// Default value of upper threshold is 0xFF and lower threshold is 0x00
+	// Both the threshold are 16-bit integer values
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() below)
-{
-	byte timing;
-
-	// Get timing byte
-	if (readByte(LTR303_REG_TIMING,timing))
-	{
-		// Set gain (0 or 1)
-		if (gain)
-			timing |= 0x10;
-		else
-			timing &= ~0x10;
-
-		// Set integration time (0 to 3)
-		timing &= ~0x03;
-		timing |= (time & 0x03);
-
-		// Write modified timing byte back to device
-		if (writeByte(LTR303_REG_TIMING,timing))
-			return(true);
-	}
-	return(false);
+			
+	return(readUInt(LTR303_THRES_UP_0,upperLimit) && readUInt(LTR303_THRES_LOW_0,lowerLimit));		
 }
+
+boolean setIntrPersist(byte persist) {
+	// Sets the interrupt persistance i.e. controls the N number of times the 
+	// measurement data is outside the range defined by upper and lower threshold
+	// Default value is 0x00
+	// If persist = 0, every sensor value out of threshold range (default)
+	// If persist = 1, every 2 consecutive value out of threshold range
+	// If persist = 2, every 3 consecutive value out of threshold range
+	// If persist = 3, every 4 consecutive value out of threshold range
+	// If persist = 4, every 5 consecutive value out of threshold range
+	// If persist = 5, every 6 consecutive value out of threshold range
+	// If persist = 6, every 7 consecutive value out of threshold range
+	// If persist = 7, every 8 consecutive value out of threshold range
+	// If persist = 8, every 9 consecutive value out of threshold range
+	// If persist = 9, every 10 consecutive value out of threshold range
+	// If persist = 10, every 11 consecutive value out of threshold range
+	// If persist = 11, every 12 consecutive value out of threshold range
+	// If persist = 12, every 13 consecutive value out of threshold range
+	// If persist = 13, every 14 consecutive value out of threshold range
+	// If persist = 14, every 15 consecutive value out of threshold range
+	// If persist = 15, every 16 consecutive value out of threshold range
+	// Returns true (1) if successful, false (0) if there was an I2C error
+	// (Also see getError() below)
+	
+	// sanity check
+	if(persist => 15)
+		persist = 0x00;
+	
+	return(writeByte(LTR303_INTR_PERS,persist));
+}
+
+
 
 
 boolean LTR303::setTiming(boolean gain, unsigned char time, unsigned int &ms)
