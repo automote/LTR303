@@ -1,4 +1,4 @@
-thinfTronics LTR303 Arduino Library
+thingTronics LTR303 Arduino Library
 ========================================
 This is a Arduino Library for the LTR303ALS Luminiosity sensor.
 This illumination sensor has a flat response across most of the visible spectrum and has an adjustable integration time. 
