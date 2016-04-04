@@ -1,82 +1,55 @@
-/* SparkFun TSL2561 library example sketch
+/* LTR303-ALS library example sketch
 
-This sketch shows how to use the SparkFunTSL2561
-library to read the AMS/TAOS TSL2561
-light sensor.
-
-Product page: https://www.sparkfun.com/products/11824
-Hook-up guide: https://learn.sparkfun.com/tutorials/getting-started-with-the-tsl2561-luminosity-sensor
+This sketch shows how to use the LTR303 library to read the Lite-On LTR303-ALS light sensor.
 
 Hardware connections:
 
 3V3 to 3.3V
 GND to GND
 
-(WARNING: do not connect 3V3 to 5V
-or the sensor will be damaged!)
+(WARNING: do not connect 3V3 to 5V or the sensor will be damaged!)
 
 You will also need to connect the I2C pins (SCL and SDA) to your Arduino.
 The pins are different on different Arduinos:
 
                     SDA    SCL
-Any Arduino         "SDA"  "SCL"
-Uno, Redboard, Pro  A4     A5
+Any Arduino        "SDA"  "SCL"
+Uno, Pro            A4     A5
 Mega2560, Due       20     21
 Leonardo            2      3
+ESP8266				5      4
 
-You do not need to connect the INT (interrupt) pin
-for basic operation.
+You can connect the INT (interrupt) pin  but it is not required for basic operation.
 
-Operation:
-
-Upload this sketch to your Arduino, and open the
-Serial Monitor window to 9600 baud.
-
-Have fun! -Your friends at SparkFun.
-
-Our example code uses the "beerware" license.
-You can do anything you like with this code.
-No really, anything. If you find it useful,
-buy me a beer someday.
-
-V10 Mike Grusin, SparkFun Electronics 12/26/2013
-Updated to Arduino 1.6.4 5/2015
 */
 
 // Your sketch must #include this library, and the Wire library
 // (Wire is a standard library included with Arduino):
 
-#include <SparkFunTSL2561.h>
+#include <LTR303.h>
 #include <Wire.h>
 
-// Create an SFE_TSL2561 object, here called "light":
+// Create an LTR303 object, here called "light":
 
-SFE_TSL2561 light;
+LTR303 light;
 
 // Global variables:
 
-boolean gain;     // Gain setting, 0 = X1, 1 = X16;
-unsigned int ms;  // Integration ("shutter") time in milliseconds
+unsigned char gain;     // Gain setting, values = 0-7 
+unsigned char integrationTime;  // Integration ("shutter") time in milliseconds
+unsigned char measurementRate;  // Interval between DATA_REGISTERS update
 
 void setup()
 {
   // Initialize the Serial port:
   
   Serial.begin(9600);
-  Serial.println("TSL2561 example sketch");
+  Serial.println("LTR303-ALS example sketch");
 
-  // Initialize the SFE_TSL2561 library
+  // Initialize the LTR303 library
 
-  // You can pass nothing to light.begin() for the default I2C address (0x39),
-  // or use one of the following presets if you have changed
-  // the ADDR jumper on the board:
+  // You can pass nothing to light.begin() for the default I2C address (0x29)
   
-  // TSL2561_ADDR_0 address with '0' shorted on board (0x29)
-  // TSL2561_ADDR   default address (0x39)
-  // TSL2561_ADDR_1 address with '1' shorted on board (0x49)
-
-  // For more information see the hookup guide at: https://learn.sparkfun.com/tutorials/getting-started-with-the-tsl2561-luminosity-sensor
-
   light.begin();
 
   // Get factory ID from sensor:
@@ -84,11 +57,10 @@ void setup()
 
   unsigned char ID;
   
-  if (light.getID(ID))
+  if (light.getPartID(ID))
   {
-    Serial.print("Got factory ID: 0X");
+    Serial.print("Got Sensor Part ID: 0X");
     Serial.print(ID,HEX);
-    Serial.println(", should be 0X5X");
   }
   // Most library commands will return true if communications was successful,
   // and false if there was a problem. You can ignore this returned value,
@@ -99,26 +71,35 @@ void setup()
     printError(error);
   }
 
-  // The light sensor has a default integration time of 402ms,
+  // The light sensor has a default integration time of 100ms,
   // and a default gain of low (1X).
   
   // If you would like to change either of these, you can
-  // do so using the setTiming() command.
+  // do so using the setControl() and setMeasurementRate() command.
   
-  // If gain = false (0), device is set to low gain (1X)
-  // If gain = high (1), device is set to high gain (16X)
-
+  // Gain can take any value from 0-7, except 4 & 5
+  // If gain = 0, device is set to 1X gain (default)
+  // If gain = 1, device is set to 2X gain
+  // If gain = 2, device is set to 4X gain
+  // If gain = 3, device is set to 8X gain
+  // If gain = 4, invalid
+  // If gain = 5, invalid
+  // If gain = 6, device is set to 48X gain
+  // If gain = 7, device is set to 96X gain
   gain = 0;
 
-  // If time = 0, integration will be 13.7ms
-  // If time = 1, integration will be 101ms
-  // If time = 2, integration will be 402ms
-  // If time = 3, use manual start / stop to perform your own integration
+  // If integrationTime = 0, integrationTime will be 100ms (default)
+  // If integrationTime = 1, integrationTime will be 50ms
+  // If integrationTime = 2, integrationTime will be 200ms
+  // If integrationTime = 3, integrationTime will be 400ms
+  // If integrationTime = 4, integrationTime will be 150ms
+  // If integrationTime = 5, integrationTime will be 250ms
+  // If integrationTime = 6, integrationTime will be 300ms
+  // If integrationTime = 7, integrationTime will be 350ms
 
-  unsigned char time = 2;
+  unsigned char time = 1;
 
-  // setTiming() will set the third parameter (ms) to the
-  // requested integration time in ms (this will be useful later):
+  
   
   Serial.println("Set timing...");
   light.setTiming(gain,time,ms);

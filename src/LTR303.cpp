@@ -396,7 +396,7 @@ boolean LTR303::setIntrPersist(byte persist) {
 	return(writeByte(LTR303_INTR_PERS,persist));
 }
 
-boolean getIntrPersist(byte &persist) {
+boolean LTR303::getIntrPersist(byte &persist) {
 	// Gets the interrupt persistance i.e. controls the N number of times the measurement data is outside the range defined by upper and lower threshold
 	// Default value is 0x00
 	// If persist = 0, every sensor value out of threshold range (default)
