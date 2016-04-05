@@ -458,7 +458,6 @@ boolean LTR303::getLux(byte gain, byte integrationTime, unsigned int CH0, unsign
 	}
 
 	// Determine lux per datasheet equations:
-	
 	if (ratio < 0.5) {
 		lux = 0.0304 * d0 - 0.062 * d0 * pow(ratio,1.4);
 		return(true);
