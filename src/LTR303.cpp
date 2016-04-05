@@ -30,7 +30,6 @@ version 0.1
 #include <LTR303.h>
 #include <Wire.h>
 
-
 LTR303::LTR303(void) {
 	// LTR303 object
 }
@@ -131,7 +130,7 @@ boolean LTR303::getControl(byte &gain, boolean reset, boolean mode) {
 		gain = (control & 0x1C) >> 2;
 		
 		// Extract reset
-		reset = ((control >> 1) & 0x02) ? true : false; 
+		reset = (control & 0x02) ? true : false; 
 		
 		// Extract mode
 		mode = (control & 0x01) ? true : false;
