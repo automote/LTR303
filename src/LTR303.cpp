@@ -505,6 +505,7 @@ boolean LTR303::readByte(byte address, byte &value) {
 
 	// Check if sensor present for read
 	Wire.beginTransmission(_i2c_address);
+	Wire.write(address);
 	_error = Wire.endTransmission();
 
 	// Read requested byte
@@ -528,6 +529,7 @@ boolean LTR303::writeByte(byte address, byte value) {
 	// (Also see getError() above)
 
 	Wire.beginTransmission(_i2c_address);
+	Wire.write(address);
 	// Write byte
 	Wire.write(value);
 	_error = Wire.endTransmission();
@@ -548,6 +550,7 @@ boolean LTR303::readUInt(byte address, unsigned int &value) {
 	
 	// Check if sensor present for read
 	Wire.beginTransmission(_i2c_address);
+	Wire.write(address);
 	_error = Wire.endTransmission();
 
 	// Read two bytes (low and high)
