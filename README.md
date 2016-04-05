@@ -10,3 +10,5 @@ Repository Contents
 * **/examples** - Example sketches for the library (.ino). Run these from the Arduino IDE. 
 * **/src** - Source files for the library (.cpp, .h).
 * **library.properties** - General library properties for the Arduino package manager.
+* **library.json** - General library properties for the Arduino package manager in JSON format
+* **keywords.txt** - Contains the keywords for Arduino IDE.
