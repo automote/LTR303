@@ -545,7 +545,7 @@ boolean LTR303::readUInt(byte address, unsigned int &value) {
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() above)
 
-	char high, low;
+	byte high, low;
 	
 	// Check if sensor present for read
 	Wire.beginTransmission(_i2c_address);
