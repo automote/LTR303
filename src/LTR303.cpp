@@ -422,6 +422,7 @@ boolean LTR303::getIntrPersist(byte &persist) {
 	return(readByte(LTR303_INTR_PERS,persist));
 }
 
+// Get the right lux algorithm
 boolean LTR303::getLux(byte gain, byte integrationTime, unsigned int CH0, unsigned int CH1, double &lux) {
 	// Convert raw data to lux
 	// gain: 0 (1X) or 7 (96X), see getControl()
