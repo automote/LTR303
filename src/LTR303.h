@@ -51,8 +51,7 @@ version 0.1
 #define LTR303_THRES_LOW_1   0x9A
 #define LTR303_INTR_PERS     0x9E
 
-class LTR303
-{
+class LTR303 {
 	public:
 		LTR303(void);
 			// LTR303 object

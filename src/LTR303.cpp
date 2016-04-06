@@ -30,7 +30,6 @@ version 0.1
 #include <LTR303.h>
 #include <Wire.h>
 
-
 LTR303::LTR303(void) {
 	// LTR303 object
 }
@@ -131,7 +130,7 @@ boolean LTR303::getControl(byte &gain, boolean reset, boolean mode) {
 		gain = (control & 0x1C) >> 2;
 		
 		// Extract reset
-		reset = ((control >> 1) & 0x02) ? true : false; 
+		reset = (control & 0x02) ? true : false; 
 		
 		// Extract mode
 		mode = (control & 0x01) ? true : false;
@@ -422,6 +421,7 @@ boolean LTR303::getIntrPersist(byte &persist) {
 	return(readByte(LTR303_INTR_PERS,persist));
 }
 
+// Get the right lux algorithm
 boolean LTR303::getLux(byte gain, byte integrationTime, unsigned int CH0, unsigned int CH1, double &lux) {
 	// Convert raw data to lux
 	// gain: 0 (1X) or 7 (96X), see getControl()
@@ -457,7 +457,6 @@ boolean LTR303::getLux(byte gain, byte integrationTime, unsigned int CH0, unsign
 	}
 
 	// Determine lux per datasheet equations:
-	
 	if (ratio < 0.5) {
 		lux = 0.0304 * d0 - 0.062 * d0 * pow(ratio,1.4);
 		return(true);
@@ -506,6 +505,7 @@ boolean LTR303::readByte(byte address, byte &value) {
 
 	// Check if sensor present for read
 	Wire.beginTransmission(_i2c_address);
+	Wire.write(address);
 	_error = Wire.endTransmission();
 
 	// Read requested byte
@@ -529,6 +529,7 @@ boolean LTR303::writeByte(byte address, byte value) {
 	// (Also see getError() above)
 
 	Wire.beginTransmission(_i2c_address);
+	Wire.write(address);
 	// Write byte
 	Wire.write(value);
 	_error = Wire.endTransmission();
@@ -545,10 +546,11 @@ boolean LTR303::readUInt(byte address, unsigned int &value) {
 	// Returns true (1) if successful, false (0) if there was an I2C error
 	// (Also see getError() above)
 
-	char high, low;
+	byte high, low;
 	
 	// Check if sensor present for read
 	Wire.beginTransmission(_i2c_address);
+	Wire.write(address);
 	_error = Wire.endTransmission();
 
 	// Read two bytes (low and high)
