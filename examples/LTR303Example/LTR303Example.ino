@@ -41,8 +41,7 @@ unsigned char gain;     // Gain setting, values = 0-7
 unsigned char integrationTime;  // Integration ("shutter") time in milliseconds
 unsigned char measurementRate;  // Interval between DATA_REGISTERS update
 
-void setup()
-{
+void setup() {
   // Initialize the Serial port:
   
   Serial.begin(9600);
@@ -60,16 +59,14 @@ void setup()
 
   unsigned char ID;
   
-  if (light.getPartID(ID))
-  {
+  if (light.getPartID(ID)) {
     Serial.print("Got Sensor Part ID: 0X");
     Serial.print(ID,HEX);
   }
   // Most library commands will return true if communications was successful,
   // and false if there was a problem. You can ignore this returned value,
   // or check whether a command worked correctly and retrieve an error code:
-  else
-  {
+  else {
     byte error = light.getError();
     printError(error);
   }
@@ -126,8 +123,7 @@ void setup()
   // Once a measurement occurs, another integration period will start.
 }
 
-void loop()
-{
+void loop() {
   // Wait between measurements before retrieving the result
   // You can also configure the sensor to issue an interrupt 
   // when measurements are complete)
@@ -148,14 +144,13 @@ void loop()
 
   unsigned int data0, data1;
   
-  if (light.getData(data0,data1))
-  {
+  if (light.getData(data0,data1)) {
     // getData() returned true, communication was successful
     
     Serial.print("data0: ");
-    Serial.print(data0);
-    Serial.print(" data1: ");
-    Serial.print(data1);
+    Serial.println(data0);
+    Serial.print("data1: ");
+    Serial.println(data1);
   
     // To calculate lux, pass all your settings and readings
     // to the getLux() function.
@@ -175,11 +170,10 @@ void loop()
     // Print out the results:
 	
     Serial.print(" lux: ");
-    Serial.print(lux);
+    Serial.println(lux);
     if (good) Serial.println(" (good)"); else Serial.println(" (BAD)");
   }
-  else
-  {
+  else {
     // getData() returned false because of an I2C error, inform the user.
 
     byte error = light.getError();
@@ -187,16 +181,15 @@ void loop()
   }
 }
 
-void printError(byte error)
+void printError(byte error) {
   // If there's an I2C error, this function will
   // print out an explanation.
-{
+
   Serial.print("I2C error: ");
   Serial.print(error,DEC);
   Serial.print(", ");
   
-  switch(error)
-  {
+  switch(error) {
     case 0:
       Serial.println("success");
       break;
